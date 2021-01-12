@@ -13,6 +13,10 @@ NODE
 NODE* make_node(){
     int i;
     NODE* ans = (NODE*) malloc(sizeof(NODE));
+    if(!ans){//problem with memory allocation
+    	return ans;
+    
+    }
     for(i=0;i<ALPHABET;i++){//init all the childrens into NULL
         ans->children[i]=NULL;
     }
@@ -29,6 +33,10 @@ NODE* insert_char(NODE* pointer, char data){
     //else return a pointer to the address of the node
     if(pointer->children[CHARTOINDEX(data)]==NULL){
         child=make_node();
+        if(!child){//problem with memory allocation
+        	return child;
+        
+        }
         child->data=data;
         pointer->children[CHARTOINDEX(data)]=child;
         
@@ -45,10 +53,15 @@ void insert_word(NODE* root, char* word){
     }
     int i;
     NODE* pointer=root;
+
     //run on each single char in the graph
     //put any char into the graph using insert_char() method
     for(i=0; i< size;i++){
         pointer=insert_char(pointer,word[i]);
+         if(!pointer){
+    		free_tree(root);
+    		exit(1);
+    }
     }
     pointer->counter++;//in the end of the word make the counter++ 
 }
@@ -89,6 +102,10 @@ void proccesing(NODE* root,char* buffer){
       }
       if(flag==TRUE){//if there is a word
         temp = (char*) malloc((i-start+1)*sizeof(char));//make a memory in the size of the found word
+        if(!temp){
+        	free_tree(root);
+        	exit(1);
+        }
         strncpy(temp,&buffer[start],i-start);//make a copy of the word
         temp[i-start+1]='\0';//make the word a string
         proper_word(root,temp);//send the found word to proper_word() method
@@ -111,6 +128,10 @@ void proccesing(NODE* root,char* buffer){
 
 void lexicographical_order_r(NODE* pointer){
     char* str=(char*) malloc(max_word*(sizeof(char)));//make place in the size of the greater word
+    if(!str){
+        free_tree(pointer);
+        exit(1);
+     }
     lexicographical_order_r_help(pointer,str,0);
     free(str);//free str after use
 }
@@ -150,6 +171,10 @@ void lexicographical_order_r_help(NODE* pointer,char* str,int index){
 
 void lexicographical_order(NODE* pointer){
     char* str=(char*) malloc(max_word*(sizeof(char)));
+    if(!str){
+        free_tree(pointer);
+        exit(1);
+     }
     lexicographical_order_help(pointer,str,0);
     free(str);
 }
@@ -196,15 +221,23 @@ void free_tree(NODE* pointer){
 //take input from stdin and send the input to proccesing() method
 NODE* input(){
     char* buffer=(char*) malloc(sizeof(char));//make a space in of size of char
+    if(!buffer){
+        exit(1);
+     }
     char c;
     int i=0,size=1;
     while((c = fgetc(stdin))!= EOF) {
    	 	buffer = (char*)realloc(buffer,  size + sizeof(char));//make realloc
+   	 	if(!buffer){//problem with memory allocation
+        	exit(1);}
    	 	buffer[i] = c;//enter the input into the array
   	  	i++;
   	  	size++;
   	} 
     NODE* root=(NODE*) malloc(sizeof(NODE));//memory for the root of the tree   
+    if(!root){//problem with memory allocation
+        exit(1);
+        }
     proccesing(root,buffer);
     free(buffer);//free after use
     return root;

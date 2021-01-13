@@ -96,7 +96,7 @@ void proccesing(NODE* root,char* buffer){
     char* temp;
     for(i=0; i<size_of_input;i++){
       start=i;
-      while(i<size_of_input&&buffer[i]!=' '&&buffer[i]!='\n'){//count the size of the word
+      while(i<size_of_input&&buffer[i]!=' '&&buffer[i]!='\n'&&buffer[i]!='\t'){//count the size of the word
           i++;
           flag=TRUE;
       }

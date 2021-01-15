@@ -12,7 +12,6 @@ NODE
 //this method return a new node after init
 NODE* make_node(){
     int i;
-  //  NODE* ans = (NODE*) malloc(sizeof(NODE));
     NODE* ans = (NODE*) calloc(1,sizeof(NODE));
     if(!ans){//problem with memory allocation
     	return ans;
@@ -102,7 +101,7 @@ void proccesing(NODE* root,char* buffer){
           flag=TRUE;
       }
       if(flag==TRUE){//if there is a word
-       // temp = (char*) malloc((i-start+1)*sizeof(char));//make a memory in the size of the found word
+
         temp = (char*) calloc((i-start+1),sizeof(char));//make a memory in the size of the found word
         if(!temp){
         	free_tree(root);
@@ -129,8 +128,8 @@ void proccesing(NODE* root,char* buffer){
 //this mehod using lexicographical_order_r_help() method
 
 void lexicographical_order_r(NODE* pointer){
-   // char* str=(char*) malloc((max_word+1)*(sizeof(char)));//make place in the size of the greater word
-    char* str=(char*) calloc((max_word*20),(sizeof(char)));//make place in the size of the greater word
+
+    char* str=(char*) calloc((max_word+1),(sizeof(char)));//make place in the size of the greater word
     
     if(!str){
         free_tree(pointer);
@@ -176,7 +175,6 @@ void lexicographical_order_r_help(NODE* pointer,char* str,int index){
 //this mehod using lexicographical_order_r_help() method
 
 void lexicographical_order(NODE* pointer){
-   // char* str=(char*) malloc((max_word+1)*(sizeof(char)));
     char* str=(char*) calloc((max_word+1),(sizeof(char)));
     if(!str){
         free_tree(pointer);
@@ -230,7 +228,7 @@ void free_tree(NODE* pointer){
 
 //take input from stdin and send the input to proccesing() method
 NODE* input(){
-    //char* buffer=(char*) malloc(sizeof(char));//make a space in of size of char
+
     char* buffer=(char*) calloc(1,sizeof(char));//make a space in of size of char
     if(!buffer){
         exit(1);
@@ -246,7 +244,6 @@ NODE* input(){
   	  	size++;
   	} 
   	buffer[i]='\0';	
-  //  NODE* root=(NODE*) malloc(sizeof(NODE));//memory for the root of the tree   
         NODE* root=(NODE*) calloc(1,sizeof(NODE));//memory for the root of the tree   
     if(!root){//problem with memory allocation
     	free(buffer);

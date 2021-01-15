@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include<string.h>
 #include "frequency.h"
-static int max_word=0;
+int max_word=0;
 NODE
 {
     char data;
@@ -12,7 +12,8 @@ NODE
 //this method return a new node after init
 NODE* make_node(){
     int i;
-    NODE* ans = (NODE*) malloc(sizeof(NODE));
+  //  NODE* ans = (NODE*) malloc(sizeof(NODE));
+    NODE* ans = (NODE*) calloc(1,sizeof(NODE));
     if(!ans){//problem with memory allocation
     	return ans;
     
@@ -101,16 +102,17 @@ void proccesing(NODE* root,char* buffer){
           flag=TRUE;
       }
       if(flag==TRUE){//if there is a word
-        temp = (char*) malloc((i-start+1)*sizeof(char));//make a memory in the size of the found word
+       // temp = (char*) malloc((i-start+1)*sizeof(char));//make a memory in the size of the found word
+        temp = (char*) calloc((i-start+1),sizeof(char));//make a memory in the size of the found word
         if(!temp){
         	free_tree(root);
         	exit(1);
         }
         strncpy(temp,&buffer[start],i-start);//make a copy of the word
-        temp[i-start+1]='\0';//make the word a string
+        temp[i-start]='\0';//make the word a string
         proper_word(root,temp);//send the found word to proper_word() method
         free(temp);//free temp after use
-        flag=0;
+        flag=FALSE;
     }
     }
     
@@ -127,7 +129,9 @@ void proccesing(NODE* root,char* buffer){
 //this mehod using lexicographical_order_r_help() method
 
 void lexicographical_order_r(NODE* pointer){
-    char* str=(char*) malloc(max_word*(sizeof(char)));//make place in the size of the greater word
+   // char* str=(char*) malloc((max_word+1)*(sizeof(char)));//make place in the size of the greater word
+    char* str=(char*) calloc((max_word*20),(sizeof(char)));//make place in the size of the greater word
+    
     if(!str){
         free_tree(pointer);
         exit(1);
@@ -160,7 +164,9 @@ void lexicographical_order_r_help(NODE* pointer,char* str,int index){
     if(pointer->counter!=0){////if this position is the of a some word -> print the word with its counter
         printf("%s %d\n",str,pointer->counter);
     }
-    str[index-1]='\0';//after printing there is no need in this letter
+    if(index-1>=0)
+    	str[index-1]='\0';//after printing there is no need in this letter
+
 
 }
 
@@ -170,7 +176,8 @@ void lexicographical_order_r_help(NODE* pointer,char* str,int index){
 //this mehod using lexicographical_order_r_help() method
 
 void lexicographical_order(NODE* pointer){
-    char* str=(char*) malloc(max_word*(sizeof(char)));
+   // char* str=(char*) malloc((max_word+1)*(sizeof(char)));
+    char* str=(char*) calloc((max_word+1),(sizeof(char)));
     if(!str){
         free_tree(pointer);
         exit(1);
@@ -204,14 +211,17 @@ void lexicographical_order_help(NODE* pointer,char* str,int index){
             index--;//after the recursive call done, tell index to be level -1
         }
     }
-    str[index-1]='\0';//after printing there is no need in this letter
+    if(index-1>=0)
+    	str[index-1]='\0';//after printing there is no need in this letter
+
 }
 
 
 
 //this method free the memory of the tree by recursive call
 void free_tree(NODE* pointer){
-    for(int i=ALPHABET-1;i>=0;i--){
+	int i;
+    for(i=ALPHABET-1;i>=0;i--){
         if(pointer->children[i]!=NULL)
             free_tree(pointer->children[i]);
     }
@@ -220,12 +230,13 @@ void free_tree(NODE* pointer){
 
 //take input from stdin and send the input to proccesing() method
 NODE* input(){
-    char* buffer=(char*) malloc(sizeof(char));//make a space in of size of char
+    //char* buffer=(char*) malloc(sizeof(char));//make a space in of size of char
+    char* buffer=(char*) calloc(1,sizeof(char));//make a space in of size of char
     if(!buffer){
         exit(1);
      }
     char c;
-    int i=0,size=1;
+    int i=0,size=2;//size of the buffer +1 for 0 in the end
     while((c = fgetc(stdin))!= EOF) {
    	 	buffer = (char*)realloc(buffer,  size + sizeof(char));//make realloc
    	 	if(!buffer){//problem with memory allocation
@@ -234,8 +245,11 @@ NODE* input(){
   	  	i++;
   	  	size++;
   	} 
-    NODE* root=(NODE*) malloc(sizeof(NODE));//memory for the root of the tree   
+  	buffer[i]='\0';	
+  //  NODE* root=(NODE*) malloc(sizeof(NODE));//memory for the root of the tree   
+        NODE* root=(NODE*) calloc(1,sizeof(NODE));//memory for the root of the tree   
     if(!root){//problem with memory allocation
+    	free(buffer);
         exit(1);
         }
     proccesing(root,buffer);
